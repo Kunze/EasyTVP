@@ -36,15 +36,14 @@ namespace EasyTVP
         {
             var type = typeof(T);
             var properties = type.GetRuntimeProperties().ToList();
-            var metadatas = new SqlMetaData[properties.Count];
 
-            SetMetadata(properties, metadatas);
-
-            return GetRecords(objects, properties, metadatas);
+            return GetRecords(objects, properties);
         }
 
-        private static void SetMetadata(List<PropertyInfo> properties, SqlMetaData[] metadatas)
+        private static SqlMetaData[] GetMetadata(List<PropertyInfo> properties)
         {
+            var metadatas = new SqlMetaData[properties.Count];
+
             for (int propertyIndex = 0; propertyIndex < properties.Count; propertyIndex++)
             {
                 var property = properties[propertyIndex];
@@ -58,11 +57,14 @@ namespace EasyTVP
                     }
                 }
             }
+
+            return metadatas;
         }
 
-        private static List<SqlDataRecord> GetRecords<T>(IEnumerable<T> objects, List<PropertyInfo> properties, SqlMetaData[] metadatas)
+        private static List<SqlDataRecord> GetRecords<T>(IEnumerable<T> objects, List<PropertyInfo> properties)
         {
             var records = new List<SqlDataRecord>();
+            var metadatas = GetMetadata(properties);
 
             foreach (var @object in objects)
             {
