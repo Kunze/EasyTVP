@@ -3,6 +3,9 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using EasyTVP;
 using System.Collections.Generic;
 using EasyTVP.Attributes;
+using System.Web.Mvc;
+using System.Diagnostics;
+using System.Linq;
 
 namespace EasyTVPTests
 {
@@ -38,7 +41,7 @@ namespace EasyTVPTests
             };
 
             var records = TVP.Map(objs);
-            var test = records[0];
+            var test = records.First();
 
             Assert.AreEqual(test.GetSqlMetaData(0).SqlDbType, System.Data.SqlDbType.VarChar);
             Assert.AreEqual(test.GetSqlMetaData(1).SqlDbType, System.Data.SqlDbType.SmallInt);
@@ -66,7 +69,7 @@ namespace EasyTVPTests
             };
 
             var records = TVP.Map(objs);
-            var test = records[0];
+            var test = records.First();
 
             Assert.AreEqual("algum texto", test.GetValue(0));
 
@@ -95,7 +98,7 @@ namespace EasyTVPTests
             };
 
             var records = TVP.Map(objs);
-            var test = records[0];
+            var test = records.First();
 
             var sqlMetaData = test.GetSqlMetaData(0);
 
@@ -117,11 +120,29 @@ namespace EasyTVPTests
             };
 
             var records = TVP.Map(objs);
-            var test = records[0];
+            var test = records.First();
 
             var sqlMetaData = test.GetSqlMetaData(0);
 
             Assert.AreEqual(System.Data.SqlDbType.NChar, sqlMetaData.SqlDbType);
+        }
+
+        [TestMethod]
+        public void Action()
+        {
+            var objs = new List<Test2>
+            {
+               
+            };
+
+            for (int i = 0; i < 1000000; i++)
+            {
+                objs.Add(new Test2());
+            }
+
+            var time = Stopwatch.StartNew();
+            var result = TVP.Map(objs);
+            var ellapsed = time.ElapsedMilliseconds;
         }
     }
 }

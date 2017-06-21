@@ -32,16 +32,15 @@ namespace EasyTVP
             new TimeSpanSqlType()
         };
 
-        public static SqlDataRecord[] Map<T>(IEnumerable<T> objects)
+        public static IEnumerable<SqlDataRecord> Map<T>(IEnumerable<T> objects)
         {
-            var list = objects.ToList();
             var type = typeof(T);
             var properties = type.GetRuntimeProperties().ToList();
             var metadatas = new SqlMetaData[properties.Count];
 
             SetMetadata(properties, metadatas);
 
-            return GetRecords(list, properties, metadatas);
+            return GetRecords(objects, properties, metadatas);
         }
 
         private static void SetMetadata(List<PropertyInfo> properties, SqlMetaData[] metadatas)
@@ -61,13 +60,12 @@ namespace EasyTVP
             }
         }
 
-        private static SqlDataRecord[] GetRecords<T>(List<T> list, List<PropertyInfo> properties, SqlMetaData[] metadatas)
+        private static List<SqlDataRecord> GetRecords<T>(IEnumerable<T> objects, List<PropertyInfo> properties, SqlMetaData[] metadatas)
         {
-            var records = new SqlDataRecord[list.Count];
+            var records = new List<SqlDataRecord>();
 
-            for (int objectIndex = 0; objectIndex < list.Count; objectIndex++)
+            foreach (var @object in objects)
             {
-                var @object = list[objectIndex];
                 var record = new SqlDataRecord(metadatas);
 
                 for (int propertyIndex = 0; propertyIndex < properties.Count; propertyIndex++)
@@ -90,7 +88,7 @@ namespace EasyTVP
                     }
                 }
 
-                records[objectIndex] = record;
+                records.Add(record);
             }
 
             return records;
