@@ -3,7 +3,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using EasyTVP;
 using System.Collections.Generic;
 using EasyTVP.Attributes;
-using System.Web.Mvc;
 using System.Diagnostics;
 using System.Linq;
 
@@ -39,7 +38,7 @@ namespace EasyTVPTests
             {
                 new Test()
             };
-
+            
             var records = TVP.Map(objs);
             var test = records.First();
 

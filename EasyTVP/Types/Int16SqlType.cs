@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace EasyTVP.Types
 {
-    public class Int16SqlType : NullableSqlType<Int16>
+    internal class Int16SqlType : NullableSqlType<Int16>
     {
         protected override SqlMetaData GetSqlMetaData(PropertyInfo property)
         {

@@ -1,11 +1,10 @@
 ﻿using System.Data;
 using Microsoft.SqlServer.Server;
-using System;
 using System.Reflection;
 
 namespace EasyTVP.Types
 {
-    public class BooleanSqlType : NullableSqlType<bool>
+    internal class BooleanSqlType : NullableSqlType<bool>
     {
         protected override SqlMetaData GetSqlMetaData(PropertyInfo property)
         {

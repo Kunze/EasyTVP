@@ -1,9 +1,4 @@
-﻿using System.Data;
-using Microsoft.SqlServer.Server;
-using System;
-using System.Reflection;
-
-namespace EasyTVP.Types
+﻿namespace EasyTVP.Types
 {
     //<TODO>
     //public class ByteArraySqlType : NullableSqlType<byte[]>

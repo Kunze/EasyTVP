@@ -1,11 +1,10 @@
 ﻿using System.Data;
 using Microsoft.SqlServer.Server;
-using System;
 using System.Reflection;
 
 namespace EasyTVP.Types
 {
-    public class DecimalSqlType : NullableSqlType<decimal>
+    internal class DecimalSqlType : NullableSqlType<decimal>
     {
         protected override SqlMetaData GetSqlMetaData(PropertyInfo property)
         {

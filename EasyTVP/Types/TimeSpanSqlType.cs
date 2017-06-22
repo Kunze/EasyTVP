@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.SqlServer.Server;
 using System.Data;
 
 namespace EasyTVP.Types
 {
-    public class TimeSpanSqlType : NullableSqlType<TimeSpan>
+    internal class TimeSpanSqlType : NullableSqlType<TimeSpan>
     {
         protected override SqlMetaData GetSqlMetaData(PropertyInfo property)
         {

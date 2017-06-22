@@ -1,11 +1,10 @@
 ﻿using System.Data;
 using Microsoft.SqlServer.Server;
-using System;
 using System.Reflection;
 
 namespace EasyTVP.Types
 {
-    public class DoubleSqlType : NullableSqlType<double>
+    internal class DoubleSqlType : NullableSqlType<double>
     {
         protected override SqlMetaData GetSqlMetaData(PropertyInfo property)
         {

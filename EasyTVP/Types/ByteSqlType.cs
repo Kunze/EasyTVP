@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.SqlServer.Server;
 using System.Data;
 
 namespace EasyTVP.Types
 {
-    public class ByteSqlType : NullableSqlType<Byte>
+    internal class ByteSqlType : NullableSqlType<Byte>
     {
         protected override SqlMetaData GetSqlMetaData(PropertyInfo property)
         {

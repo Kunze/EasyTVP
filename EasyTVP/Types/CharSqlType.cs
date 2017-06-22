@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
+﻿using System.Data;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.SqlServer.Server;
 
 namespace EasyTVP.Types
 {
-    public class CharSqlType : NullableSqlType<char>
+    internal class CharSqlType : NullableSqlType<char>
     {
         //não existe Char, somente Char[]
         protected override SqlMetaData GetSqlMetaData(PropertyInfo property)

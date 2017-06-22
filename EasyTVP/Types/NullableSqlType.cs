@@ -3,10 +3,11 @@ using EasyTVP.Attributes;
 using System;
 using System.Data;
 using System.Reflection;
+using EasyTVP.Types.Interfaces;
 
 namespace EasyTVP.Types
 {
-    public abstract class NullableSqlType<T> : ISqlType
+    internal abstract class NullableSqlType<T> : ISqlType
     {
         protected abstract SqlMetaData GetSqlMetaData(PropertyInfo property);
         protected abstract void SetRecord(SqlDataRecord record, int index, object value);

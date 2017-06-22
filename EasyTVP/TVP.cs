@@ -4,15 +4,10 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Linq;
 using EasyTVP.Types;
+using EasyTVP.Types.Interfaces;
 
 namespace EasyTVP
 {
-    public interface ISqlType
-    {
-        bool TrySet(PropertyInfo propertyInfo, object @object, SqlDataRecord record, int index);
-        bool TryGet(PropertyInfo propertyInfo, out SqlMetaData metadata);
-    }
-
     public class TVP
     {
         private static List<ISqlType> types = new List<ISqlType>

@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace EasyTVP.Types
 {
-    public class DateTimeOffSetSqlType : NullableSqlType<DateTimeOffset>
+    internal class DateTimeOffSetSqlType : NullableSqlType<DateTimeOffset>
     {
         protected override SqlMetaData GetSqlMetaData(PropertyInfo property)
         {
