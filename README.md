@@ -64,7 +64,7 @@ namespace Example
 
                 var parameters = new DynamicParameters();
                 parameters.Add("Name", "One's name");
-                parameters.Add("Many", SqlMapper.AsTableValuedParameter(tvps, "ManyType"));
+                parameters.Add("Many", SqlMapper.AsTableValuedParameter(tvps));
 
                 connection.Execute("AddOneAndMany", parameters, commandType: System.Data.CommandType.StoredProcedure);
             }
