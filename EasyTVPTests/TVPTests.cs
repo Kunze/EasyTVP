@@ -5,6 +5,9 @@ using System.Collections.Generic;
 using EasyTVP.Attributes;
 using System.Diagnostics;
 using System.Linq;
+using System.Data;
+using Dapper;
+using System.Data.SqlClient;
 
 namespace EasyTVPTests
 {
@@ -42,21 +45,21 @@ namespace EasyTVPTests
             var records = TVP.Map(objs);
             var test = records.First();
 
-            Assert.AreEqual(test.GetSqlMetaData(0).SqlDbType, System.Data.SqlDbType.VarChar);
-            Assert.AreEqual(test.GetSqlMetaData(1).SqlDbType, System.Data.SqlDbType.SmallInt);
-            Assert.AreEqual(test.GetSqlMetaData(2).SqlDbType, System.Data.SqlDbType.SmallInt);
-            Assert.AreEqual(test.GetSqlMetaData(3).SqlDbType, System.Data.SqlDbType.Int);
-            Assert.AreEqual(test.GetSqlMetaData(4).SqlDbType, System.Data.SqlDbType.Int);
-            Assert.AreEqual(test.GetSqlMetaData(5).SqlDbType, System.Data.SqlDbType.BigInt);
-            Assert.AreEqual(test.GetSqlMetaData(6).SqlDbType, System.Data.SqlDbType.BigInt);
-            Assert.AreEqual(test.GetSqlMetaData(7).SqlDbType, System.Data.SqlDbType.Bit);
+            Assert.AreEqual(test.GetSqlMetaData(0).SqlDbType, SqlDbType.VarChar);
+            Assert.AreEqual(test.GetSqlMetaData(1).SqlDbType, SqlDbType.SmallInt);
+            Assert.AreEqual(test.GetSqlMetaData(2).SqlDbType, SqlDbType.SmallInt);
+            Assert.AreEqual(test.GetSqlMetaData(3).SqlDbType, SqlDbType.Int);
+            Assert.AreEqual(test.GetSqlMetaData(4).SqlDbType, SqlDbType.Int);
+            Assert.AreEqual(test.GetSqlMetaData(5).SqlDbType, SqlDbType.BigInt);
+            Assert.AreEqual(test.GetSqlMetaData(6).SqlDbType, SqlDbType.BigInt);
+            Assert.AreEqual(test.GetSqlMetaData(7).SqlDbType, SqlDbType.Bit);
             //Assert.AreEqual(test.GetSqlMetaData(8).SqlDbType, System.Data.SqlDbType.TinyInt);
-            Assert.AreEqual(test.GetSqlMetaData(8).SqlDbType, System.Data.SqlDbType.VarChar);
-            Assert.AreEqual(test.GetSqlMetaData(9).SqlDbType, System.Data.SqlDbType.DateTimeOffset);
-            Assert.AreEqual(test.GetSqlMetaData(10).SqlDbType, System.Data.SqlDbType.Decimal);
-            Assert.AreEqual(test.GetSqlMetaData(11).SqlDbType, System.Data.SqlDbType.Float);
-            Assert.AreEqual(test.GetSqlMetaData(12).SqlDbType, System.Data.SqlDbType.Real);
-            Assert.AreEqual(test.GetSqlMetaData(13).SqlDbType, System.Data.SqlDbType.Time);
+            Assert.AreEqual(test.GetSqlMetaData(8).SqlDbType, SqlDbType.VarChar);
+            Assert.AreEqual(test.GetSqlMetaData(9).SqlDbType, SqlDbType.DateTimeOffset);
+            Assert.AreEqual(test.GetSqlMetaData(10).SqlDbType, SqlDbType.Decimal);
+            Assert.AreEqual(test.GetSqlMetaData(11).SqlDbType, SqlDbType.Float);
+            Assert.AreEqual(test.GetSqlMetaData(12).SqlDbType, SqlDbType.Real);
+            Assert.AreEqual(test.GetSqlMetaData(13).SqlDbType, SqlDbType.Time);
         }
 
         [TestMethod]
@@ -106,7 +109,7 @@ namespace EasyTVPTests
 
         class Test2
         {
-            [SqlDataType(System.Data.SqlDbType.NChar)]
+            [SqlDataType(SqlDbType.VarChar)]
             public string Text { get; set; }
         }
 
@@ -123,7 +126,7 @@ namespace EasyTVPTests
 
             var sqlMetaData = test.GetSqlMetaData(0);
 
-            Assert.AreEqual(System.Data.SqlDbType.NChar, sqlMetaData.SqlDbType);
+            Assert.AreEqual(SqlDbType.NChar, sqlMetaData.SqlDbType);
         }
 
         [TestMethod]
@@ -142,6 +145,48 @@ namespace EasyTVPTests
             var time = Stopwatch.StartNew();
             var result = TVP.Map(objs);
             var ellapsed = time.ElapsedMilliseconds;
+        }
+
+        public enum Status
+        {
+            Closed = 0,
+            Open = 1
+        }
+
+        public class Many
+        {
+            public string Name { get; set; } = "A name";
+            public int Quantity { get; set; } = 10;
+            public DateTime Data { get; set; } = DateTime.Now;
+            public Status Status { get; set; } = Status.Open;
+        }
+
+        //[TestMethod]
+        //public void MyTestMethod()
+        //{
+        //    List<Many> list = CreateList();
+        //    var tvps = TVP.Map(list);
+
+        //    using (var connection = new SqlConnection("Server=localhost;Database=Testes;Trusted_Connection=True;"))
+        //    {
+        //        connection.Execute("AddOneAndMany", new
+        //        {
+        //            Name = "One's name",
+        //            Many = SqlMapper.AsTableValuedParameter(tvps)
+        //        }, commandType: CommandType.StoredProcedure);
+        //    }
+        //}
+
+        private static List<Many> CreateList()
+        {
+            var list = new List<Many>();
+
+            for (int i = 0; i < 10; i++)
+            {
+                list.Add(new Many());
+            }
+
+            return list;
         }
     }
 }

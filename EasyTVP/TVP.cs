@@ -17,14 +17,15 @@ namespace EasyTVP
             new Int32SqlType(),
             new Int64SqlType(),
             new BooleanSqlType(),
-            new ByteSqlType(),
             new CharSqlType(),
-            new DateTimeOffSetSqlType(),
             new DateTimeSqlType(),
             new DecimalSqlType(),
             new DoubleSqlType(),
             new SingleSqlType(),
-            new TimeSpanSqlType()
+            new TimeSpanSqlType(),
+            new EnumSqlType(),
+            new DateTimeOffSetSqlType(),
+            new ByteSqlType()
         };
 
         public static IEnumerable<SqlDataRecord> Map<T>(IEnumerable<T> objects)
