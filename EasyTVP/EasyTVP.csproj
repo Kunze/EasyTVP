@@ -2,6 +2,12 @@
 
   <PropertyGroup>
     <TargetFrameworks>net451;netstandard1.4</TargetFrameworks>
+    <PackageVersion>1.1.0</PackageVersion>
+    <PackageId>EasyTVP</PackageId>
+    <Authors>Murilo Kunze</Authors>
+    <Owners>Murilo Kunze</Owners>
+    <Title>EasyTVP</Title>
+    <Description>Easy Table Valued Parameter - Easy one to many insert/update/delete.</Description>
   </PropertyGroup>
 
   <ItemGroup>
