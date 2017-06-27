@@ -77,14 +77,13 @@ namespace Example
 		static void Main(string[] args)
 		{
 			List<Many> list = CreateList();
-			var tvps = TVP.Map(list);
 
 			using (var connection = new SqlConnection("Server=localhost;Database=Testes;Trusted_Connection=True;"))
 			{
 				connection.Execute("AddOneAndMany", new
 				{
 				    Name = "One's name",
-				    Many = SqlMapper.AsTableValuedParameter(tvps)
+				    Many = TVP.Map(list)
 				}, commandType: CommandType.StoredProcedure);
 			}
 		}
