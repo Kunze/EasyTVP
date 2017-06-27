@@ -104,15 +104,14 @@ namespace Example
 }
 ```
 
-## Customizating SQL types ##
-# Changing default SqlDbType and MaxLength #
+# Customizating SQL types
+## Changing default SqlDbType
 
 ```c#
 using EasyTVP;
 
 public class Foo
 {
-	[SqlDataRecordMaxLength(123)]
 	[SqlDataRecordType(System.Data.SqlDbType.VarChar)] //default
 	public string Name1 { get; set; } = "A name";
 
@@ -135,7 +134,8 @@ public class Foo
 	public decimal Decimal3 { get; set; }
 }
 ```
-# Changing order #
+
+## Changing order
 ```c#
 class NotOrderedModel
 {
@@ -150,7 +150,16 @@ class NotOrderedModel
 }
 ```
 
-# Changing default(1000) varchar max length #
+## Changing MaxLength
+```c#
+public class Foo
+{
+	[SqlDataRecordMaxLength(2000)]
+	public string Name1 { get; set; } = "A name";
+}
+```
+
+## Changing default(1000) varchar max length
 
 ```c#
 EasyTVP.Types.StringSqlType.DefaultMaxLength = 1234;
