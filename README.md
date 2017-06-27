@@ -52,67 +52,66 @@ using Dapper;
 namespace Example
 {
 	internal enum Status
-    {
-        Closed = 0,
-        Open = 1
-    }
+	{
+		Closed = 0,
+		Open = 1
+	}
 
-    internal enum LongStatus : long
-    {
-        Closed = long.MaxValue - 1,
-        Open = long.MaxValue
-    }
+	internal enum LongStatus : long
+	{
+		Closed = long.MaxValue - 1,
+		Open = long.MaxValue
+	}
 
 	class Many
-    {
-        public string Name { get; set; } = "A name";
-        public int Quantity { get; set; } = 10;
-        public DateTime Data { get; set; } = DateTime.Now;
-        public Status Status { get; set; } = Status.Open;
-        public LongStatus LongStatus { get; set; } = LongStatus.Open;
-    }
+	{
+		public string Name { get; set; } = "A name";
+		public int Quantity { get; set; } = 10;
+		public DateTime Data { get; set; } = DateTime.Now;
+		public Status Status { get; set; } = Status.Open;
+		public LongStatus LongStatus { get; set; } = LongStatus.Open;
+	}
 
-    class Program
-    {
-        static void Main(string[] args)
-        {
+	class Program
+	{
+		static void Main(string[] args)
+		{
 			List<Many> list = CreateList();
-            var tvps = TVP.Map(list);
+			var tvps = TVP.Map(list);
 
-            using (var connection = new SqlConnection("Server=localhost;Database=Testes;Trusted_Connection=True;"))
-            {
-                connection.Execute("AddOneAndMany", new
-                {
-                    Name = "One's name",
-                    Many = SqlMapper.AsTableValuedParameter(tvps)
-                }, commandType: CommandType.StoredProcedure);
-            }
-        }
+			using (var connection = new SqlConnection("Server=localhost;Database=Testes;Trusted_Connection=True;"))
+			{
+				connection.Execute("AddOneAndMany", new
+				{
+				    Name = "One's name",
+				    Many = SqlMapper.AsTableValuedParameter(tvps)
+				}, commandType: CommandType.StoredProcedure);
+			}
+		}
 
 		private static List<Many> CreateList()
-        {
-            var list = new List<Many>();
+		{
+			var list = new List<Many>();
 
-            for (int i = 0; i < 3; i++)
-            {
-                list.Add(new Many());
-            }
+		    	for (int i = 0; i < 3; i++)
+		    	{
+				list.Add(new Many());
+		    	}
 
-            return list;
-        }
-    }
+		    	return list;
+		}
+	}
 }
 ```
 
-## Customizating SQL types ##
-# Changing default SqlDbType and MaxLength #
+# Customizating SQL types
+## Changing default SqlDbType
 
 ```c#
 using EasyTVP;
 
 public class Foo
 {
-	[SqlDataRecordMaxLength(123)]
 	[SqlDataRecordType(System.Data.SqlDbType.VarChar)] //default
 	public string Name1 { get; set; } = "A name";
 
@@ -135,7 +134,8 @@ public class Foo
 	public decimal Decimal3 { get; set; }
 }
 ```
-# Changing order #
+
+## Changing order
 ```c#
 class NotOrderedModel
 {
@@ -150,7 +150,16 @@ class NotOrderedModel
 }
 ```
 
-# Changing default(1000) varchar max length #
+## Changing MaxLength
+```c#
+public class Foo
+{
+	[SqlDataRecordMaxLength(2000)]
+	public string Name1 { get; set; } = "A name";
+}
+```
+
+## Changing default(1000) varchar max length
 
 ```c#
 EasyTVP.Types.StringSqlType.DefaultMaxLength = 1234;
