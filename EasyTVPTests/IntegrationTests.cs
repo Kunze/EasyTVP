@@ -46,7 +46,7 @@
 //                connection.Execute("AddOneAndMany", new
 //                {
 //                    Name = "One's name",
-//                    Many = SqlMapper.AsTableValuedParameter(tvps)
+//                    Many = tvps
 //                }, commandType: CommandType.StoredProcedure);
 //            }
 //        }

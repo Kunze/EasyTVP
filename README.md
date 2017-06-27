@@ -83,7 +83,7 @@ namespace Example
 				connection.Execute("AddOneAndMany", new
 				{
 				    Name = "One's name",
-				    Many = TVP.Map(list)
+				    Many = list.Map()
 				}, commandType: CommandType.StoredProcedure);
 			}
 		}
@@ -94,10 +94,10 @@ namespace Example
 
 		    	for (int i = 0; i < 3; i++)
 		    	{
-				list.Add(new Many());
+					list.Add(new Many());
 		    	}
 
-		    	return list;
+				return list;
 		}
 	}
 }

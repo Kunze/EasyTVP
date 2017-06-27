@@ -9,7 +9,7 @@ using EasyTVP.Attributes;
 
 namespace EasyTVP
 {
-    public class TVP
+    public static class TVP
     {
         private static List<ISqlType> types = new List<ISqlType>
         {
@@ -28,8 +28,8 @@ namespace EasyTVP
             new DateTimeOffSetSqlType(),
             new ByteSqlType()
         };
-
-        public static IEnumerable<SqlDataRecord> Map<T>(IEnumerable<T> objects)
+        
+        public static IEnumerable<SqlDataRecord> Map<T>(this IEnumerable<T> objects)
         {
             var type = typeof(T);
             var properties = type.GetRuntimeProperties().ToList();
