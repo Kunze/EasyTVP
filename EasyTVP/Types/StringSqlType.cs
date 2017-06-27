@@ -2,22 +2,20 @@
 using System.Reflection;
 using Microsoft.SqlServer.Server;
 using EasyTVP.Attributes;
+using System;
 
 namespace EasyTVP.Types
 {
-    internal class StringSqlType : NullableSqlType<string>
+    public class StringSqlType : NullableSqlType<string>
     {
+        public static int DefaultMaxLength = 1000;
+
         protected override SqlMetaData GetSqlMetaData(PropertyInfo property)
         {
-            var maxLengthAttribute = property.GetCustomAttribute<SqlMaxLengthAttribute>();
-            var maxLength = maxLengthAttribute?.MaxLength ?? 1000;
+            var type = SqlDataRecordTypeAttribute.GetAttributeSqlDbType(property) ?? SqlDbType.VarChar;
+            var maxLength = SqlDataRecordMaxLengthAttribute.GetSqlMaxLengthAttribute(property) ?? DefaultMaxLength;
 
-            return new SqlMetaData(property.Name, GetAttributeSqlDbType(property) ?? SqlDbType.VarChar, maxLength);
-        }
-
-        protected override void SetRecord(SqlDataRecord record, int index, object value)
-        {
-            record.SetString(index, value as string);
+            return new SqlMetaData(property.Name, type, maxLength);
         }
     }
 }

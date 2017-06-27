@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Linq;
 using EasyTVP.Types;
 using EasyTVP.Types.Interfaces;
+using EasyTVP.Attributes;
 
 namespace EasyTVP
 {
@@ -32,8 +33,9 @@ namespace EasyTVP
         {
             var type = typeof(T);
             var properties = type.GetRuntimeProperties().ToList();
+            var orderedProperties = properties.OrderBy(x => x.GetCustomAttribute<SqlDataRecordOrderAttribute>()?.Index).ToList();
 
-            return GetRecords(objects, properties);
+            return GetRecords(objects, orderedProperties);
         }
 
         private static SqlMetaData[] GetMetadata(List<PropertyInfo> properties)

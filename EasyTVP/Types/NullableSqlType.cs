@@ -7,10 +7,9 @@ using EasyTVP.Types.Interfaces;
 
 namespace EasyTVP.Types
 {
-    internal abstract class NullableSqlType<T> : ISqlType
+    public abstract class NullableSqlType<T> : ISqlType
     {
         protected abstract SqlMetaData GetSqlMetaData(PropertyInfo property);
-        protected abstract void SetRecord(SqlDataRecord record, int index, object value);
 
         public bool TryGet(PropertyInfo propertyInfo, out SqlMetaData metadata)
         {
@@ -38,7 +37,7 @@ namespace EasyTVP.Types
                 }
                 else
                 {
-                    SetRecord(record, index, value);
+                    record.SetValue(index, (T)value);
                 }
 
                 return true;
@@ -53,13 +52,6 @@ namespace EasyTVP.Types
             type = Nullable.GetUnderlyingType(type) ?? type;
 
             return type;
-        }
-
-        protected SqlDbType? GetAttributeSqlDbType(PropertyInfo property)
-        {
-            var sqlDbType = property.GetCustomAttribute<SqlDataTypeAttribute>();
-
-            return sqlDbType?.Type ?? null;
         }
     }
 }

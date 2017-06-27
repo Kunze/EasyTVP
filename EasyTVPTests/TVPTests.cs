@@ -14,9 +14,21 @@ namespace EasyTVPTests
     [TestClass]
     public class TVPTests
     {
+        internal enum Status
+        {
+            Closed = 0,
+            Open = 1
+        }
+
+        internal enum LongStatus: long
+        {
+            Closed = 0,
+            Open = 1,
+        }
+
         internal class Test
         {
-            [SqlMaxLength(1234)]
+            [SqlDataRecordMaxLength(1234)]
             public string Text { get; set; } = "algum texto";
             public Int16 Number16 { get; set; } = 16;
             public Int16? Number16Null { get; set; } = null;
@@ -32,10 +44,12 @@ namespace EasyTVPTests
             public double Double { get; set; } = 50d;
             public Single Single { get; set; } = 30f;
             public TimeSpan TimeSpan { get; set; } = new TimeSpan(1, 1, 1);
+            public Status Status { get; set; } = Status.Open;
+            public LongStatus LongStatus { get; set; } = LongStatus.Open;
         }
 
         [TestMethod]
-        public void ShouldReturnCorrectMetadata()
+        public void Should_Return_Correct_Metadata()
         {
             var objs = new List<Test>
             {
@@ -60,10 +74,12 @@ namespace EasyTVPTests
             Assert.AreEqual(test.GetSqlMetaData(11).SqlDbType, SqlDbType.Float);
             Assert.AreEqual(test.GetSqlMetaData(12).SqlDbType, SqlDbType.Real);
             Assert.AreEqual(test.GetSqlMetaData(13).SqlDbType, SqlDbType.Time);
+            Assert.AreEqual(test.GetSqlMetaData(14).SqlDbType, SqlDbType.Int);
+            Assert.AreEqual(test.GetSqlMetaData(15).SqlDbType, SqlDbType.BigInt);//enum long
         }
 
         [TestMethod]
-        public void ShouldReturnCorrectValues()
+        public void Should_Return_Correct_Values()
         {
             var objs = new List<Test>
             {
@@ -89,10 +105,12 @@ namespace EasyTVPTests
             Assert.AreEqual(50d, test.GetValue(11));
             Assert.AreEqual(30f, test.GetValue(12));
             Assert.AreEqual(new TimeSpan(1, 1, 1), test.GetValue(13));
+            Assert.AreEqual(1, test.GetValue(14));
+            Assert.AreEqual((Int64)1, test.GetValue(15)); //enum long
         }
 
         [TestMethod]
-        public void ShouldReturnCorrectMaxLengthValue()
+        public void Should_Return_Correct_MaxLength_Value()
         {
             var objs = new List<Test>
             {
@@ -109,12 +127,12 @@ namespace EasyTVPTests
 
         class Test2
         {
-            [SqlDataType(SqlDbType.VarChar)]
+            [SqlDataRecordType(SqlDbType.NChar)]
             public string Text { get; set; }
         }
 
         [TestMethod]
-        public void ShouldReturnCorrectSqlDbTypeValue()
+        public void Should_Return_Correct_SqlDbType_Value()
         {
             var objs = new List<Test2>
             {
@@ -129,64 +147,32 @@ namespace EasyTVPTests
             Assert.AreEqual(SqlDbType.NChar, sqlMetaData.SqlDbType);
         }
 
-        [TestMethod]
-        public void Action()
+        class OrderedModel
         {
-            var objs = new List<Test2>
+            [SqlDataRecordOrder(2)]
+            public int Second { get; set; }
+
+            [SqlDataRecordOrder(1)]
+            public string First { get; set; }
+
+            [SqlDataRecordOrder(3)]
+            public long Third { get; set; }
+        }
+
+        [TestMethod]
+        public void Should_Order_Properties_Correct()
+        {
+            var list = new List<OrderedModel>
             {
-               
+                new OrderedModel()
             };
 
-            for (int i = 0; i < 1000000; i++)
-            {
-                objs.Add(new Test2());
-            }
+            var tvp = TVP.Map(list);
+            var record = tvp.First();
 
-            var time = Stopwatch.StartNew();
-            var result = TVP.Map(objs);
-            var ellapsed = time.ElapsedMilliseconds;
-        }
-
-        public enum Status
-        {
-            Closed = 0,
-            Open = 1
-        }
-
-        public class Many
-        {
-            public string Name { get; set; } = "A name";
-            public int Quantity { get; set; } = 10;
-            public DateTime Data { get; set; } = DateTime.Now;
-            public Status Status { get; set; } = Status.Open;
-        }
-
-        //[TestMethod]
-        //public void MyTestMethod()
-        //{
-        //    List<Many> list = CreateList();
-        //    var tvps = TVP.Map(list);
-
-        //    using (var connection = new SqlConnection("Server=localhost;Database=Testes;Trusted_Connection=True;"))
-        //    {
-        //        connection.Execute("AddOneAndMany", new
-        //        {
-        //            Name = "One's name",
-        //            Many = SqlMapper.AsTableValuedParameter(tvps)
-        //        }, commandType: CommandType.StoredProcedure);
-        //    }
-        //}
-
-        private static List<Many> CreateList()
-        {
-            var list = new List<Many>();
-
-            for (int i = 0; i < 10; i++)
-            {
-                list.Add(new Many());
-            }
-
-            return list;
+            Assert.AreEqual(record.GetSqlMetaData(0).Name, "First");
+            Assert.AreEqual(record.GetSqlMetaData(1).Name, "Second");
+            Assert.AreEqual(record.GetSqlMetaData(2).Name, "Third");
         }
     }
 }

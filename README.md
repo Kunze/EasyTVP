@@ -10,16 +10,20 @@ CREATE TABLE One (
 
 CREATE TABLE Many (
 	Id INT PRIMARY KEY IDENTITY (1, 1),
-	Name VARCHAR(100),
-	Quantity INT,
+	Name varchar(100),
+	Quantity int,
 	OneId int,
-	FOREIGN KEY (OneId) REFERENCES One(Id)
+	Data date,
+	Status int,
+	LongStatus bigint
 )
 
-CREATE TYPE ManyType AS TABLE
-( 
-	Name VARCHAR(100),
-	Quantity INT
+CREATE TYPE ManyType AS TABLE(
+	Name varchar(100) NULL,
+	Quantity int NULL,
+	Data date NULL,
+	Status int NULL,
+	LongStatus bigint
 )
 ```
 
@@ -32,10 +36,10 @@ AS
 BEGIN
 	DECLARE @Temp TABLE (Id INT)
 
-	INSERT INTO One (Name) OUTPUT INSERTED.Id INTO @Temp VALUES (@Name)
+	INSERT INTO One (Name) OUTPUT inserted.Id INTO @Temp VALUES (@Name)
 
-	INSERT INTO Many (Name, Quantity, OneId)
-	SELECT Name, Quantity, (SELECT Id FROM @Temp) FROM @Many
+	INSERT INTO Many (OneId, Name, Quantity, data, status, longStatus)
+	SELECT (SELECT Id FROM @Temp), Name, Quantity, Data, status, longStatus FROM @Many
 END
 ```
 
@@ -47,34 +51,49 @@ using Dapper;
 
 namespace Example
 {
-    public class Many
+	internal enum Status
+    {
+        Closed = 0,
+        Open = 1
+    }
+
+    internal enum LongStatus : long
+    {
+        Closed = long.MaxValue - 1,
+        Open = long.MaxValue
+    }
+
+	class Many
     {
         public string Name { get; set; } = "A name";
         public int Quantity { get; set; } = 10;
+        public DateTime Data { get; set; } = DateTime.Now;
+        public Status Status { get; set; } = Status.Open;
+        public LongStatus LongStatus { get; set; } = LongStatus.Open;
     }
 
     class Program
     {
         static void Main(string[] args)
         {
+			List<Many> list = CreateList();
+            var tvps = TVP.Map(list);
+
             using (var connection = new SqlConnection("Server=localhost;Database=Testes;Trusted_Connection=True;"))
             {
-                List<Many> list = CreateList();
-                var tvps = EasyTVP.TVP.Map(list);
-
-                var parameters = new DynamicParameters();
-                parameters.Add("Name", "One's name");
-                parameters.Add("Many", SqlMapper.AsTableValuedParameter(tvps));
-
-                connection.Execute("AddOneAndMany", parameters, commandType: System.Data.CommandType.StoredProcedure);
+                connection.Execute("AddOneAndMany", new
+                {
+                    Name = "One's name",
+                    Many = SqlMapper.AsTableValuedParameter(tvps)
+                }, commandType: CommandType.StoredProcedure);
             }
         }
 
-        private static List<Many> CreateList()
+		private static List<Many> CreateList()
         {
             var list = new List<Many>();
 
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 3; i++)
             {
                 list.Add(new Many());
             }
@@ -86,32 +105,53 @@ namespace Example
 ```
 
 ## Customizating SQL types ##
+# Changing default SqlDbType and MaxLength #
 
 ```c#
 using EasyTVP;
 
 public class Foo
 {
-    [SqlMaxLength(123)]
-    [SqlDataType(System.Data.SqlDbType.VarChar)] //default
-    public string Name1 { get; set; } = "A name";
+	[SqlDataRecordMaxLength(123)]
+	[SqlDataRecordType(System.Data.SqlDbType.VarChar)] //default
+	public string Name1 { get; set; } = "A name";
 
-    [SqlDataType(System.Data.SqlDbType.NText)]
-    public string Name2 { get; set; }
+	[SqlDataRecordType(System.Data.SqlDbType.NText)]
+	public string Name2 { get; set; }
 
-    [SqlDataType(System.Data.SqlDbType.NVarChar)]
-    public string Name3 { get; set; }
+	[SqlDataRecordType(System.Data.SqlDbType.NVarChar)]
+	public string Name3 { get; set; }
 
-    [SqlDataType(System.Data.SqlDbType.Text)]
-    public string Name4 { get; set; }
+	[SqlDataRecordType(System.Data.SqlDbType.Text)]
+	public string Name4 { get; set; }
 
-    [SqlDataType(System.Data.SqlDbType.Decimal)] //default
-    public decimal Decimal1 { get; set; }
+	[SqlDataRecordType(System.Data.SqlDbType.Decimal)] //default
+	public decimal Decimal1 { get; set; }
 
-    [SqlDataType(System.Data.SqlDbType.Money)]
-    public decimal Decimal2 { get; set; }
+	[SqlDataRecordType(System.Data.SqlDbType.Money)]
+	public decimal Decimal2 { get; set; }
 
-    [SqlDataType(System.Data.SqlDbType.SmallMoney)]
-    public decimal Decimal3 { get; set; }
+	[SqlDataRecordType(System.Data.SqlDbType.SmallMoney)]
+	public decimal Decimal3 { get; set; }
 }
+```
+# Changing order #
+```c#
+class NotOrderedModel
+{
+	[SqlDataRecordOrder(2)]
+	public int Second { get; set; }
+
+	[SqlDataRecordOrder(1)]
+	public string First { get; set; }
+
+	[SqlDataRecordOrder(3)]
+	public long Third { get; set; }
+}
+```
+
+# Changing default(1000) varchar max length #
+
+```c#
+EasyTVP.Types.StringSqlType.DefaultMaxLength = 1234;
 ```
