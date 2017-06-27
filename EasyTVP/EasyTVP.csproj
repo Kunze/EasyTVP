@@ -2,12 +2,14 @@
 
   <PropertyGroup>
     <TargetFrameworks>net451;netstandard1.4</TargetFrameworks>
-    <PackageVersion>1.2.0</PackageVersion>
+    <PackageVersion>1.3.0</PackageVersion>
     <PackageId>EasyTVP</PackageId>
     <Authors>Murilo Kunze</Authors>
     <Owners>Murilo Kunze</Owners>
     <Title>EasyTVP</Title>
     <Description>Easy Table Valued Parameter - Easy one to many insert/update/delete.</Description>
+    <PackageTags>Dapper</PackageTags>
+    <PackageProjectUrl>https://github.com/Kunze/EasyTVP</PackageProjectUrl>
   </PropertyGroup>
 
   <ItemGroup>
