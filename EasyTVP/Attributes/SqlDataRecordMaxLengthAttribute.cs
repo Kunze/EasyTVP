@@ -16,10 +16,5 @@ namespace EasyTVP.Attributes
 
             MaxLength = maxLength;
         }
-
-        public static long? GetSqlMaxLengthAttribute(PropertyInfo property)
-        {
-            return property.GetCustomAttribute<SqlDataRecordMaxLengthAttribute>()?.MaxLength;
-        }
     }
 }

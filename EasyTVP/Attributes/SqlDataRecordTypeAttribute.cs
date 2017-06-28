@@ -12,12 +12,5 @@ namespace EasyTVP.Attributes
         {
             Type = type;
         }
-
-        public static SqlDbType? GetAttributeSqlDbType(PropertyInfo property)
-        {
-            var sqlDbType = property.GetCustomAttribute<SqlDataRecordTypeAttribute>();
-
-            return sqlDbType?.Type ?? null;
-        }
     }
 }

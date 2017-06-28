@@ -12,8 +12,8 @@ namespace EasyTVP.Types
 
         protected override SqlMetaData GetSqlMetaData(PropertyInfo property)
         {
-            var type = SqlDataRecordTypeAttribute.GetAttributeSqlDbType(property) ?? SqlDbType.VarChar;
-            var maxLength = SqlDataRecordMaxLengthAttribute.GetSqlMaxLengthAttribute(property) ?? DefaultMaxLength;
+            var type = property.GetCustomAttribute<SqlDataRecordTypeAttribute>()?.Type ?? SqlDbType.VarChar;
+            var maxLength = property.GetCustomAttribute<SqlDataRecordMaxLengthAttribute>()?.MaxLength ?? DefaultMaxLength;
 
             return new SqlMetaData(property.Name, type, maxLength);
         }

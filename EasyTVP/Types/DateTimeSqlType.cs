@@ -10,7 +10,7 @@ namespace EasyTVP.Types
     {
         protected override SqlMetaData GetSqlMetaData(PropertyInfo property)
         {
-            var type = SqlDataRecordTypeAttribute.GetAttributeSqlDbType(property) ?? SqlDbType.DateTime;
+            var type = property.GetCustomAttribute<SqlDataRecordTypeAttribute>()?.Type ?? SqlDbType.DateTime;
             
             return new SqlMetaData(property.Name, type);
         }
