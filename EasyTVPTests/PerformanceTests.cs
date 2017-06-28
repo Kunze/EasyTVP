@@ -31,7 +31,6 @@ namespace EasyTVPTests
             public Int64 Number64 { get; set; } = 64;
             public Int64? Number64Null { get; set; } = null;
             public bool Boolean { get; set; } = true;
-            //public Byte Byte { get; set; } = new Byte();
             public char Char { get; set; } = 'm';
             public DateTimeOffset DateTimeOffSet { get; set; } = DateTimeOffset.MinValue;
             public decimal Decimal { get; set; } = 100m;
@@ -50,14 +49,12 @@ namespace EasyTVPTests
 
             };
 
-            for (int i = 0; i < 10000; i++)
+            for (int i = 0; i < 50000; i++)
             {
                 objs.Add(new PerformanceModel());
             }
 
-            var time = Stopwatch.StartNew();
             var result = TVP.Map(objs);
-            var ellapsed = time.ElapsedMilliseconds;
         }
     }
 }

@@ -54,6 +54,11 @@ namespace EasyTVP
                         break;
                     }
                 }
+
+                if(metadatas[propertyIndex] == null)
+                {
+                    throw new InvalidOperationException($"Does not exist a SqlDbType for type { property.PropertyType.ToString() } of property {property.Name }.");
+                }
             }
 
             return metadatas;
@@ -63,7 +68,7 @@ namespace EasyTVP
         {
             var records = new List<SqlDataRecord>();
             var metadatas = GetMetadata(properties);
-
+            
             foreach (var @object in objects)
             {
                 var record = new SqlDataRecord(metadatas);
@@ -72,18 +77,21 @@ namespace EasyTVP
                 {
                     var property = properties[propertyIndex];
 
+                    if (SqlTypeCache.TryGet(property, out ISqlType sqlCachedType))
+                    {
+                        sqlCachedType.TrySet(property, @object, record, propertyIndex);
+
+                        continue;
+                    }
+
                     for (int sqlIndex = 0; sqlIndex < types.Count; sqlIndex++)
                     {
                         var sqlType = types[sqlIndex];
 
                         if (sqlType.TrySet(property, @object, record, propertyIndex))
                         {
+                            SqlTypeCache.TryAdd(property, sqlType);
                             break;
-                        }
-
-                        if (sqlIndex == types.Count)
-                        {
-                            throw new InvalidOperationException($"Não existe um sqlType registrado para { property.GetType().Name }");
                         }
                     }
                 }
@@ -92,6 +100,27 @@ namespace EasyTVP
             }
 
             return records;
+        }
+    }
+
+    internal static class SqlTypeCache
+    {
+        private static Dictionary<PropertyInfo, ISqlType> Cache = new Dictionary<PropertyInfo, ISqlType>();
+
+        internal static bool TryGet(PropertyInfo property, out ISqlType sqlType)
+        {
+            return Cache.TryGetValue(property, out sqlType);
+        }
+
+        internal static bool TryAdd(PropertyInfo property, ISqlType sqlType)
+        {
+            if (!Cache.ContainsKey(property))
+            {
+                Cache.Add(property, sqlType);
+                return true;
+            }
+
+            return false;
         }
     }
 }
