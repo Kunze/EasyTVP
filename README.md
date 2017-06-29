@@ -103,6 +103,22 @@ namespace Example
 }
 ```
 
+## How to send List of primitive types like List<int>?
+
+```c#
+	class Program
+	{
+		static void Main(string[] args)
+		{
+			var list = new List<int> { 1, 2, 3 };
+
+			var tvp = list.Select(x => new {
+				Id = x
+			}).Map();
+		}
+	}
+```
+
 # Customizating SQL types
 ## Changing default SqlDbType
 
