@@ -60,7 +60,7 @@ namespace EasyTVP.Types
             return false;
         }
 
-        private Type GetUnderlyingType(PropertyInfo propertyInfo)
+        private static Type GetUnderlyingType(PropertyInfo propertyInfo)
         {
             var type = propertyInfo.PropertyType;
             type = Nullable.GetUnderlyingType(type) ?? type;

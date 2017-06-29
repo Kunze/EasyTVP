@@ -28,11 +28,11 @@ namespace EasyTVP
             new DateTimeOffSetSqlType(),
             new ByteSqlType()
         };
-        
-        public static IEnumerable<SqlDataRecord> Map<T>(this IEnumerable<T> objects)
+
+        public static IEnumerable<SqlDataRecord> Map<T>(this IEnumerable<T> objects) where T: class
         {
             var type = typeof(T);
-            var properties = type.GetRuntimeProperties().ToList();
+            var properties = type.GetRuntimeProperties();
             var orderedProperties = properties.OrderBy(x => x.GetCustomAttribute<SqlDataRecordOrderAttribute>()?.Index).ToList();
 
             return GetRecords(objects, orderedProperties);
@@ -64,11 +64,10 @@ namespace EasyTVP
             return metadatas;
         }
 
-        private static List<SqlDataRecord> GetRecords<T>(IEnumerable<T> objects, List<PropertyInfo> properties)
+        private static IEnumerable<SqlDataRecord> GetRecords<T>(IEnumerable<T> objects, List<PropertyInfo> properties)
         {
-            var records = new List<SqlDataRecord>();
             var metadatas = GetMetadata(properties);
-            
+
             foreach (var @object in objects)
             {
                 var record = new SqlDataRecord(metadatas);
@@ -96,10 +95,8 @@ namespace EasyTVP
                     }
                 }
 
-                records.Add(record);
+                yield return record;
             }
-
-            return records;
         }
     }
 

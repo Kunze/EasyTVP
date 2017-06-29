@@ -33,12 +33,14 @@ namespace EasyTVPTests
             public bool Boolean { get; set; } = true;
             public char Char { get; set; } = 'm';
             public DateTimeOffset DateTimeOffSet { get; set; } = DateTimeOffset.MinValue;
+            public DateTime Datetime { get; set; } = DateTime.Now;
+            public DateTime? DatetimeNull { get; set; } = null;
             public decimal Decimal { get; set; } = 100m;
             public double Double { get; set; } = 50d;
             public Single Single { get; set; } = 30f;
             public TimeSpan TimeSpan { get; set; } = new TimeSpan(1, 1, 1);
-            public Status Status { get; set; } = Status.Open;
-            public Status? StatusNull { get; set; } = null;
+            //public Status Status { get; set; } = Status.Open;
+            //public Status? StatusNull { get; set; } = null;
         }
 
         [TestMethod]
@@ -49,12 +51,13 @@ namespace EasyTVPTests
 
             };
 
-            for (int i = 0; i < 50000; i++)
+            for (int i = 0; i < 10000; i++)
             {
                 objs.Add(new PerformanceModel());
             }
 
             var result = TVP.Map(objs);
+            var list = result.ToList();
         }
     }
 }

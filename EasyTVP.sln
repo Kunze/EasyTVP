@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.13
+VisualStudioVersion = 15.0.26430.14
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyTVP", "EasyTVP\EasyTVP.csproj", "{0BA1C620-BD1E-4435-A13A-F7FD8FD28C42}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EasyTVP", "EasyTVP\EasyTVP.csproj", "{0BA1C620-BD1E-4435-A13A-F7FD8FD28C42}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyTVPTests", "EasyTVPTests\EasyTVPTests.csproj", "{C06E32F0-4E7F-4863-B11B-B1F86AC58347}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationTests", "IntegrationTests\IntegrationTests.csproj", "{B92AF8B4-051D-49A7-A0FA-CE431AC96AC9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{C06E32F0-4E7F-4863-B11B-B1F86AC58347}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C06E32F0-4E7F-4863-B11B-B1F86AC58347}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C06E32F0-4E7F-4863-B11B-B1F86AC58347}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B92AF8B4-051D-49A7-A0FA-CE431AC96AC9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B92AF8B4-051D-49A7-A0FA-CE431AC96AC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B92AF8B4-051D-49A7-A0FA-CE431AC96AC9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B92AF8B4-051D-49A7-A0FA-CE431AC96AC9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
