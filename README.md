@@ -103,20 +103,20 @@ namespace Example
 }
 ```
 
-## How to send List of primitive types like List<int>?
+## How to send List of primitive type like List&lt;int&gt;?
 
 ```c#
-	class Program
+class Program
+{
+	static void Main(string[] args)
 	{
-		static void Main(string[] args)
-		{
-			var list = new List<int> { 1, 2, 3 };
+		var list = new List<int> { 1, 2, 3 };
 
-			var tvp = list.Select(x => new {
-				Id = x
-			}).Map();
-		}
+		var tvp = list.Select(x => new {
+			Id = x
+		}).Map();
 	}
+}
 ```
 
 # Customizating SQL types
