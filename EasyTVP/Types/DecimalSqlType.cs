@@ -2,12 +2,14 @@
 using Microsoft.SqlServer.Server;
 using System.Reflection;
 using EasyTVP.Attributes;
+using EasyTVP.Types.Interfaces;
+using System;
 
 namespace EasyTVP.Types
 {
-    public class DecimalSqlType : NullableSqlType<decimal>
+    public class DecimalSqlType : ISqlType
     {
-        protected override SqlMetaData GetSqlMetaData(PropertyInfo property)
+        public SqlMetaData GetMetadata(PropertyInfo property)
         {
             var type = property.GetCustomAttribute<SqlDataRecordTypeAttribute>()?.Type ?? SqlDbType.Decimal;
 

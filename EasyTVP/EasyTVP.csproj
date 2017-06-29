@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>net451;netstandard1.4</TargetFrameworks>
-    <PackageVersion>1.4.0</PackageVersion>
+    <PackageVersion>1.4.1</PackageVersion>
     <PackageId>EasyTVP</PackageId>
     <Authors>Murilo Kunze</Authors>
     <Owners>Murilo Kunze</Owners>

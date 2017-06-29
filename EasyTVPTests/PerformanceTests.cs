@@ -39,8 +39,8 @@ namespace EasyTVPTests
             public double Double { get; set; } = 50d;
             public Single Single { get; set; } = 30f;
             public TimeSpan TimeSpan { get; set; } = new TimeSpan(1, 1, 1);
-            //public Status Status { get; set; } = Status.Open;
-            //public Status? StatusNull { get; set; } = null;
+            public Status Status { get; set; } = Status.Open;
+            public Status? StatusNull { get; set; } = null;
         }
 
         [TestMethod]
@@ -51,7 +51,7 @@ namespace EasyTVPTests
 
             };
 
-            for (int i = 0; i < 10000; i++)
+            for (int i = 0; i < 10_000; i++)
             {
                 objs.Add(new PerformanceModel());
             }

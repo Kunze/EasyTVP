@@ -20,7 +20,7 @@ namespace EasyTVPTests
             Open = 1
         }
 
-        internal enum LongStatus: long
+        internal enum LongStatus : long
         {
             Closed = 0,
             Open = 1,
@@ -55,7 +55,7 @@ namespace EasyTVPTests
             {
                 new Test()
             };
-            
+
             var records = TVP.Map(objs);
             var test = records.First();
 
@@ -147,6 +147,21 @@ namespace EasyTVPTests
             Assert.AreEqual(SqlDbType.NChar, sqlMetaData.SqlDbType);
         }
 
+        [TestMethod]
+        public void Should_Return_Correct_Values_For_List()
+        {
+            var objs = new List<Test2>
+            {
+                new Test2 { Text = "a" },
+                new Test2 { Text = "b" }
+            };
+
+            var tvp = objs.Map().ToArray();
+
+            Assert.AreEqual("a", tvp[0].GetValue(0));
+            Assert.AreEqual("b", tvp[1].GetValue(0));
+        }
+
         class OrderedModel
         {
             [SqlDataRecordOrder(2)]
@@ -173,6 +188,22 @@ namespace EasyTVPTests
             Assert.AreEqual(record.GetSqlMetaData(0).Name, "First");
             Assert.AreEqual(record.GetSqlMetaData(1).Name, "Second");
             Assert.AreEqual(record.GetSqlMetaData(2).Name, "Third");
+        }
+
+        [TestMethod]
+        public void Should_Return_Correct_Values_For_Dynamic_List()
+        {
+            var list = new List<int>() { 1, 2, 3 };
+
+            var prop = list.GetType().GetProperties();
+            var tvp = list.Select(x => new
+            {
+                Id = x
+            }).Map().ToArray();
+
+            Assert.AreEqual(1, tvp[0].GetValue(0));
+            Assert.AreEqual(2, tvp[1].GetValue(0));
+            Assert.AreEqual(3, tvp[2].GetValue(0));
         }
     }
 }

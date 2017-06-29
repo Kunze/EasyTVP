@@ -3,12 +3,13 @@ using Microsoft.SqlServer.Server;
 using System;
 using System.Reflection;
 using EasyTVP.Attributes;
+using EasyTVP.Types.Interfaces;
 
 namespace EasyTVP.Types
 {
-    public class DateTimeSqlType : NullableSqlType<DateTime>
+    public class DateTimeSqlType : ISqlType
     {
-        protected override SqlMetaData GetSqlMetaData(PropertyInfo property)
+        public SqlMetaData GetMetadata(PropertyInfo property)
         {
             var type = property.GetCustomAttribute<SqlDataRecordTypeAttribute>()?.Type ?? SqlDbType.DateTime;
             

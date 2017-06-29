@@ -2,12 +2,13 @@
 using Microsoft.SqlServer.Server;
 using System;
 using System.Reflection;
+using EasyTVP.Types.Interfaces;
 
 namespace EasyTVP.Types
 {
-    public class DateTimeOffSetSqlType : NullableSqlType<DateTimeOffset>
+    public class DateTimeOffSetSqlType : ISqlType
     {
-        protected override SqlMetaData GetSqlMetaData(PropertyInfo property)
+        public SqlMetaData GetMetadata(PropertyInfo property)
         {
             return new SqlMetaData(property.Name, SqlDbType.DateTimeOffset);
         }

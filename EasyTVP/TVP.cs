@@ -9,115 +9,92 @@ using EasyTVP.Attributes;
 
 namespace EasyTVP
 {
-    public static class TVP
+    internal class PropertyMetadata
     {
-        private static List<ISqlType> types = new List<ISqlType>
+        private static Dictionary<Type, ISqlType> sqlTypes = new Dictionary<Type, ISqlType>
         {
-            new StringSqlType(),
-            new Int16SqlType(),
-            new Int32SqlType(),
-            new Int64SqlType(),
-            new BooleanSqlType(),
-            new CharSqlType(),
-            new DateTimeSqlType(),
-            new DecimalSqlType(),
-            new DoubleSqlType(),
-            new SingleSqlType(),
-            new TimeSpanSqlType(),
-            new EnumSqlType(),
-            new DateTimeOffSetSqlType(),
-            new ByteSqlType()
+            [typeof(string)] = new StringSqlType(),
+            [typeof(Int16)] = new Int16SqlType(),
+            [typeof(Int32)] = new Int32SqlType(),
+            [typeof(Int64)] = new Int64SqlType(),
+            [typeof(bool)] = new BooleanSqlType(),
+            [typeof(char)] = new CharSqlType(),
+            [typeof(DateTime)] = new DateTimeSqlType(),
+            [typeof(decimal)] = new DecimalSqlType(),
+            [typeof(double)] = new DoubleSqlType(),
+            [typeof(Single)] = new SingleSqlType(),
+            [typeof(TimeSpan)] = new TimeSpanSqlType(),
+            [typeof(DateTimeOffset)] = new DateTimeOffSetSqlType(),
+            [typeof(byte)] = new ByteSqlType()
         };
 
+        public readonly string Name;
+        public readonly Type Type;
+        private readonly PropertyInfo Property;
+        private readonly ISqlType SqlType;
+
+        public PropertyMetadata(PropertyInfo property)
+        {
+            Name = property.Name;
+            Type = GetUnderlyingType(property);
+            Property = property;
+
+            if(!sqlTypes.ContainsKey(Type))
+            {
+                throw new ArgumentException($"Does not exist a {typeof(ISqlType).FullName} for {property.PropertyType} (property: {property.Name})");
+            }
+
+            SqlType = sqlTypes[Type];
+        }
+
+        public SqlMetaData GetMetadata()
+        {
+            return SqlType.GetMetadata(Property);
+        }
+
+        public object GetValue(object @object)
+        {
+            return Property.GetValue(@object);
+        }
+
+        private static Type GetUnderlyingType(PropertyInfo propertyInfo)
+        {
+            var type = propertyInfo.PropertyType;
+            type = Nullable.GetUnderlyingType(type) ?? type;
+
+            if (type.GetTypeInfo().IsEnum)
+            {
+                type = Enum.GetUnderlyingType(type);
+            }
+
+            return type;
+        }
+    }
+
+    public static class TVP
+    {
         public static IEnumerable<SqlDataRecord> Map<T>(this IEnumerable<T> objects) where T: class
         {
             var type = typeof(T);
             var properties = type.GetRuntimeProperties();
-            var orderedProperties = properties.OrderBy(x => x.GetCustomAttribute<SqlDataRecordOrderAttribute>()?.Index).ToList();
-
-            return GetRecords(objects, orderedProperties);
-        }
-
-        private static SqlMetaData[] GetMetadata(List<PropertyInfo> properties)
-        {
-            var metadatas = new SqlMetaData[properties.Count];
-
-            for (int propertyIndex = 0; propertyIndex < properties.Count; propertyIndex++)
-            {
-                var property = properties[propertyIndex];
-
-                foreach (var sqlType in types)
-                {
-                    if (sqlType.TryGet(property, out SqlMetaData metadata))
-                    {
-                        metadatas[propertyIndex] = metadata;
-                        break;
-                    }
-                }
-
-                if(metadatas[propertyIndex] == null)
-                {
-                    throw new InvalidOperationException($"Does not exist a SqlDbType for type { property.PropertyType.ToString() } of property {property.Name }.");
-                }
-            }
-
-            return metadatas;
-        }
-
-        private static IEnumerable<SqlDataRecord> GetRecords<T>(IEnumerable<T> objects, List<PropertyInfo> properties)
-        {
-            var metadatas = GetMetadata(properties);
+            var orderedProperties = properties.OrderBy(x => x.GetCustomAttribute<SqlDataRecordOrderAttribute>()?.Index);
+            var propertiesMetadata = orderedProperties.Select(x => new PropertyMetadata(x)).ToArray();
+            var metadatas = propertiesMetadata.Select(x => x.GetMetadata()).ToArray();
 
             foreach (var @object in objects)
             {
                 var record = new SqlDataRecord(metadatas);
 
-                for (int propertyIndex = 0; propertyIndex < properties.Count; propertyIndex++)
+                for (int propertyIndex = 0; propertyIndex < propertiesMetadata.Length; propertyIndex++)
                 {
-                    var property = properties[propertyIndex];
+                    var propertyMetadata = propertiesMetadata[propertyIndex];
 
-                    if (SqlTypeCache.TryGet(property, out ISqlType sqlCachedType))
-                    {
-                        sqlCachedType.TrySet(property, @object, record, propertyIndex);
-
-                        continue;
-                    }
-
-                    for (int sqlIndex = 0; sqlIndex < types.Count; sqlIndex++)
-                    {
-                        var sqlType = types[sqlIndex];
-
-                        if (sqlType.TrySet(property, @object, record, propertyIndex))
-                        {
-                            SqlTypeCache.TryAdd(property, sqlType);
-                            break;
-                        }
-                    }
+                    var value = propertyMetadata.GetValue(@object);
+                    record.SetValue(propertyIndex, value);
                 }
 
                 yield return record;
             }
-        }
-    }
-
-    internal static class SqlTypeCache
-    {
-        private static Dictionary<PropertyInfo, ISqlType> Cache = new Dictionary<PropertyInfo, ISqlType>();
-
-        internal static bool TryGet(PropertyInfo property, out ISqlType sqlType)
-        {
-            return Cache.TryGetValue(property, out sqlType);
-        }
-
-        internal static bool TryAdd(PropertyInfo property, ISqlType sqlType)
-        {
-            if (!Cache.ContainsKey(property))
-            {
-                Cache.Add(property, sqlType);
-                return true;
-            }
-
-            return false;
         }
     }
 }
