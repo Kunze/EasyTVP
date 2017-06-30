@@ -28,14 +28,12 @@ namespace EasyTVP
             [typeof(byte)] = new ByteSqlType()
         };
 
-        public readonly string Name;
         public readonly Type Type;
         private readonly PropertyInfo Property;
         private readonly ISqlType SqlType;
 
         public PropertyMetadata(PropertyInfo property)
         {
-            Name = property.Name;
             Type = GetUnderlyingType(property);
             Property = property;
 
