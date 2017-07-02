@@ -1,5 +1,6 @@
-# EasyTVP
-Easy Table Valued Parameter
+# Easy Table Valued Parameter
+
+[![Build status](https://ci.appveyor.com/api/projects/status/749bcblahsbiqy55?svg=true)](https://ci.appveyor.com/project/Kunze/easytvp)
 
 **1 - Create tables and type:**
 ```sql
